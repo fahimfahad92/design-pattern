@@ -20,6 +20,14 @@ public class NotificationRouter {
     this.inAppNotificationService = inAppNotificationService;
   }
 
+  /**
+   * Sends a notification based on the specified {@code NotificationType}.
+   * Delegates the notification process to the appropriate strategy,
+   * such as email, push, or in-app notification.
+   *
+   * @param notificationType the type of notification to be sent; must be one of the values from {@code NotificationType}
+   * @return the {@code NotificationType} that was successfully sent
+   */
   public NotificationType sendNotification(NotificationType notificationType) {
     NotificationStrategy notificationStrategy = getNotificationStrategy(notificationType);
     NotificationContext notificationContext = new NotificationContext(notificationStrategy);
