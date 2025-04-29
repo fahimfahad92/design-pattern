@@ -82,9 +82,9 @@ In this project, the Decorator pattern is implemented for a notification system:
     └────┬────┘                        │
          │ implements                  │
          │                             │ wraps
-┌────────┴────────┐           ┌────────┴────────────┐
+┌────────┴──────────┐         ┌────────┴────────────┐
 │DefaultNotification│         │NotificationDecorator│
-└─────────────────┘           └────────┬────────────┘
+└───────────────────┘         └────────┬────────────┘
                                        │ extends
                       ┌────────────────┼────────────────┐
                       │                │                │
