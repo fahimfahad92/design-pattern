@@ -71,9 +71,9 @@ In this project, the Decorator pattern is implemented for a notification system:
 #### Class Diagram
 
 ```
-┌───────────────────┐      ┌───────────────────┐
-│NotificationService│─────>│NotificationSettings
-└───────────────────┘      └───────────────────┘
+┌───────────────────┐      ┌────────────────────┐
+│NotificationService│─────>│NotificationSettings│
+└───────────────────┘      └────────────────────┘
          │
          │ creates
          ▼
