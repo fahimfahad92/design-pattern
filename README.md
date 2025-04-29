@@ -50,6 +50,50 @@ In this project, the Strategy pattern is implemented for a notification system:
     └────────────────────┘ └─────────────────────┘ └────────────────────┘
 ```
 
+### Decorator Pattern
+
+The Decorator pattern allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It's a structural pattern that uses composition instead of inheritance to extend functionality.
+
+#### Implementation Details
+
+In this project, the Decorator pattern is implemented for a notification system:
+
+- **Component Interface**: `Notifier` - Defines the interface for objects that can be decorated
+- **Concrete Component**: `DefaultNotification` - Provides the basic implementation of the Notifier interface
+- **Base Decorator**: `NotificationDecorator` - Abstract class that implements Notifier and has a reference to a Notifier object
+- **Concrete Decorators**:
+  - `EmailNotificationDecorator` - Adds email notification functionality
+  - `PushNotificationDecorator` - Adds push notification functionality
+  - `InAppNotificationDecorator` - Adds in-app notification functionality
+- **Client**: `NotificationService` - Creates and configures the decorators based on settings
+- **Configuration**: `NotificationSettings` - Record that specifies which notification types to enable
+
+#### Class Diagram
+
+```
+┌───────────────────┐      ┌───────────────────┐
+│NotificationService│─────>│NotificationSettings
+└───────────────────┘      └───────────────────┘
+         │
+         │ creates
+         ▼
+    ┌─────────┐
+    │ Notifier│◄───────────────────────┐
+    └────┬────┘                        │
+         │ implements                  │
+         │                             │ wraps
+┌────────┴────────┐           ┌────────┴────────────┐
+│DefaultNotification│         │NotificationDecorator│
+└─────────────────┘           └────────┬────────────┘
+                                       │ extends
+                      ┌────────────────┼────────────────┐
+                      │                │                │
+         ┌────────────────────┐ ┌─────────────────┐ ┌────────────────────┐
+         │EmailNotification   │ │PushNotification │ │InAppNotification   │
+         │Decorator           │ │Decorator        │ │Decorator           │
+         └────────────────────┘ └─────────────────┘ └────────────────────┘
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -103,5 +147,38 @@ NotificationType inAppType = router.sendNotification(NotificationType.IN_APP);
 // Output: Sending in-app notification
 ```
 
+### Decorator Pattern Example
 
+```java
+// Import necessary classes
+import org.fahim.designpattern.DesignPatternApplication;
+import org.fahim.designpattern.decorator.NotificationService;
+import org.fahim.designpattern.decorator.NotificationSettings;
+import org.springframework.context.ApplicationContext;
+import org.springframework.boot.SpringApplication;
 
+// Get the notification service from Spring context
+ApplicationContext context = SpringApplication.run(DesignPatternApplication.class, args);
+NotificationService notificationService = context.getBean(NotificationService.class);
+
+// Send only email notification
+String emailResult = notificationService.sendNotification("user@example.com", 
+                                        new NotificationSettings(true, false, false));
+// Output: Email sent to user@example.com
+// Result: "Email"
+
+// Send email and push notifications
+String emailPushResult = notificationService.sendNotification("user@example.com", 
+                                        new NotificationSettings(true, true, false));
+// Output: Email sent to user@example.com
+//         Push sent to user@example.com
+// Result: "Email , Push"
+
+// Send email, push, and in-app notifications
+String allResult = notificationService.sendNotification("user@example.com", 
+                                        new NotificationSettings(true, true, true));
+// Output: Email sent to user@example.com
+//         Push sent to user@example.com
+//         InApp sent to user@example.com
+// Result: "Email , Push , InApp"
+```
