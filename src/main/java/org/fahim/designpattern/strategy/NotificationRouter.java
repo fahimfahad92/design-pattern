@@ -21,11 +21,11 @@ public class NotificationRouter {
   }
 
   /**
-   * Sends a notification based on the specified {@code NotificationType}.
-   * Delegates the notification process to the appropriate strategy,
-   * such as email, push, or in-app notification.
+   * Sends a notification based on the specified {@code NotificationType}. Delegates the
+   * notification process to the appropriate strategy, such as email, push, or in-app notification.
    *
-   * @param notificationType the type of notification to be sent; must be one of the values from {@code NotificationType}
+   * @param notificationType the type of notification to be sent; must be one of the values from
+   *     {@code NotificationType}
    * @return the {@code NotificationType} that was successfully sent
    */
   public NotificationType sendNotification(NotificationType notificationType) {

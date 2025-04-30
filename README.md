@@ -94,6 +94,47 @@ In this project, the Decorator pattern is implemented for a notification system:
          └────────────────────┘ └─────────────────┘ └────────────────────┘
 ```
 
+### Builder Pattern
+
+The Builder pattern separates the construction of a complex object from its representation, allowing the same construction process to create different representations. It's particularly useful when an object needs to be created with many optional parameters or configurations.
+
+#### Implementation Details
+
+In this project, the Builder pattern is implemented for a notification system:
+
+- **Products**:
+  - `EmailNotification` - Record class representing an email notification
+  - `PushNotification` - Record class representing a push notification
+- **Builders**:
+  - `EmailNotificationBuilder` - Builds EmailNotification objects
+  - `PushNotificationBuilder` - Builds PushNotification objects
+- **Director**: `NotificationDirector` - Coordinates the building process
+- **Client**: `NotificationContentService` - Uses the director and builders to create notification objects
+
+#### Class Diagram
+
+```
+┌───────────────────────┐      ┌────────────────────┐
+│NotificationContent    │─────>│NotificationDirector│
+│Service                │      └─────────┬──────────┘
+└───────────────────────┘                │
+                                         │ 
+                                         │
+                                         ▼                                                             
+                         ┌───────────────────────────────┐
+                         │                               │
+            ┌────────────────────┐         ┌─────────────────────┐
+            │EmailNotification   │         │PushNotification     │
+            │Builder             │         │Builder              │
+            └────────────┬───────┘         └──────────┬──────────┘
+                         │                            │
+                         │ creates                    │ creates
+                         ▼                            ▼
+            ┌────────────────────┐         ┌─────────────────────┐
+            │EmailNotification   │         │PushNotification     │
+            └────────────────────┘         └─────────────────────┘
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -181,4 +222,32 @@ String allResult = notificationService.sendNotification("user@example.com",
 //         Push sent to user@example.com
 //         InApp sent to user@example.com
 // Result: "Email , Push , InApp"
+```
+
+### Builder Pattern Example
+
+```java
+// Import necessary classes
+import org.fahim.designpattern.DesignPatternApplication;
+import org.fahim.designpattern.builder.NotificationContentService;
+import org.fahim.designpattern.builder.User;
+import org.fahim.designpattern.builder.EmailNotification;
+import org.fahim.designpattern.builder.PushNotification;
+import org.springframework.context.ApplicationContext;
+import org.springframework.boot.SpringApplication;
+
+// Get the notification service from Spring context
+ApplicationContext context = SpringApplication.run(DesignPatternApplication.class, args);
+NotificationContentService service = context.getBean(NotificationContentService.class);
+
+// Create a user
+User user = new User("John Doe", "john@example.com", "device123");
+
+// Build an email notification
+EmailNotification emailNotification = service.buildEmailNotification(user);
+// Output: EmailNotification[subject=Email Notification Subject, content=Email Notification Content, email=john@example.com]
+
+// Build a push notification
+PushNotification pushNotification = service.buildPushNotification(user);
+// Output: PushNotification[subject=Push Notification Subject, content=Push Notification Content, deviceId=device123]
 ```
