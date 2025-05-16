@@ -12,42 +12,47 @@ The project is organized by design patterns, with each pattern implemented in it
 
 ## Design Patterns Implemented
 
-### Strategy Pattern
+### Builder Pattern
 
-The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. It lets the algorithm vary independently from clients that use it.
+The Builder pattern separates the construction of a complex object from its representation, allowing the same
+construction process to create different representations. It's particularly useful when an object needs to be created
+with many optional parameters or configurations.
 
 #### Implementation Details
 
-In this project, the Strategy pattern is implemented for a notification system:
+In this project, the Builder pattern is implemented for a notification system:
 
-- **Interface**: `NotificationStrategy` - Defines the contract for all notification strategies
-- **Concrete Strategies**:
-  - `EmailNotificationService` - Sends email notifications
-  - `PushNotificationService` - Sends push notifications
-  - `InAppNotificationService` - Sends in-app notifications
-- **Context**: `NotificationContext` - Maintains a reference to a strategy object and delegates the work to it
-- **Client**: `NotificationRouter` - Selects the appropriate strategy based on the notification type
+- **Products**:
+    - `EmailNotification` - Record class representing an email notification
+    - `PushNotification` - Record class representing a push notification
+- **Builders**:
+    - `EmailNotificationBuilder` - Builds EmailNotification objects
+    - `PushNotificationBuilder` - Builds PushNotification objects
+- **Director**: `NotificationDirector` - Coordinates the building process
+- **Client**: `NotificationContentService` - Uses the director and builders to create notification objects
 
 #### Class Diagram
 
 ```
-┌───────────────────┐      ┌───────────────────┐
-│ NotificationRouter│─────>│NotificationContext│
-└───────────────────┘      └─────────┬─────────┘
-                                     │
-                                     │ uses
-                                     ▼
-                           ┌─────────────────────┐
-                           │ NotificationStrategy│
-                           └─────────────────────┘
-                                     ▲
-                                     │ implements
-                 ┌───────────────────┼───────────────────┐
-                 │                   │                   │
-    ┌────────────────────┐ ┌─────────────────────┐ ┌────────────────────┐
-    │EmailNotification   │ │PushNotification     │ │InAppNotification   │
-    │Service             │ │Service              │ │Service             │
-    └────────────────────┘ └─────────────────────┘ └────────────────────┘
+┌───────────────────────┐      ┌────────────────────┐
+│NotificationContent    │─────>│NotificationDirector│
+│Service                │      └─────────┬──────────┘
+└───────────────────────┘                │
+                                         │ 
+                                         │
+                                         ▼                                                             
+                         ┌───────────────────────────────┐
+                         │                               │
+            ┌────────────────────┐         ┌─────────────────────┐
+            │EmailNotification   │         │PushNotification     │
+            │Builder             │         │Builder              │
+            └────────────┬───────┘         └──────────┬──────────┘
+                         │                            │
+                         │ creates                    │ creates
+                         ▼                            ▼
+            ┌────────────────────┐         ┌─────────────────────┐
+            │EmailNotification   │         │PushNotification     │
+            └────────────────────┘         └─────────────────────┘
 ```
 
 ### Decorator Pattern
@@ -94,45 +99,82 @@ In this project, the Decorator pattern is implemented for a notification system:
          └────────────────────┘ └─────────────────┘ └────────────────────┘
 ```
 
-### Builder Pattern
+### Factory Pattern
 
-The Builder pattern separates the construction of a complex object from its representation, allowing the same construction process to create different representations. It's particularly useful when an object needs to be created with many optional parameters or configurations.
+The Factory pattern provides an interface for creating objects in a superclass, but allows subclasses to alter the type
+of objects that will be created. It's a creational pattern that uses factory methods to deal with the problem of
+creating objects without having to specify the exact class of the object that will be created.
 
 #### Implementation Details
 
-In this project, the Builder pattern is implemented for a notification system:
+In this project, the Factory pattern is implemented for a notification system:
 
-- **Products**:
-  - `EmailNotification` - Record class representing an email notification
-  - `PushNotification` - Record class representing a push notification
-- **Builders**:
-  - `EmailNotificationBuilder` - Builds EmailNotification objects
-  - `PushNotificationBuilder` - Builds PushNotification objects
-- **Director**: `NotificationDirector` - Coordinates the building process
-- **Client**: `NotificationContentService` - Uses the director and builders to create notification objects
+- **Interface**: `Notification` - Defines the contract for all notification types
+- **Concrete Products**:
+    - `EmailNotification` - Sends email notifications
+    - `SmsNotification` - Sends SMS notifications
+- **Factory**: `NotificationFactory` - Creates notification objects based on the notification type
+- **Client**: `NotificationService` - Uses the factory to get the appropriate notification object
+- **Type Enum**: `NotificationType` - Defines the types of notifications that can be created
 
 #### Class Diagram
 
 ```
-┌───────────────────────┐      ┌────────────────────┐
-│NotificationContent    │─────>│NotificationDirector│
-│Service                │      └─────────┬──────────┘
-└───────────────────────┘                │
-                                         │ 
-                                         │
-                                         ▼                                                             
-                         ┌───────────────────────────────┐
-                         │                               │
-            ┌────────────────────┐         ┌─────────────────────┐
-            │EmailNotification   │         │PushNotification     │
-            │Builder             │         │Builder              │
-            └────────────┬───────┘         └──────────┬──────────┘
-                         │                            │
-                         │ creates                    │ creates
-                         ▼                            ▼
-            ┌────────────────────┐         ┌─────────────────────┐
-            │EmailNotification   │         │PushNotification     │
-            └────────────────────┘         └─────────────────────┘
+┌───────────────────┐      ┌───────────────────┐
+│NotificationService│─────>│NotificationFactory│
+└───────────────────┘      └─────────┬─────────┘
+                                     │
+                                     │ creates
+                                     ▼
+                           ┌─────────────────────┐
+                           │     Notification    │
+                           └─────────────────────┘
+                                     ▲
+                                     │ implements
+                         ┌───────────┴───────────┐
+                         │                       │
+            ┌────────────────────┐    ┌─────────────────────┐
+            │EmailNotification   │    │SmsNotification      │
+            └────────────────────┘    └─────────────────────┘
+```
+
+### Strategy Pattern
+
+The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. It lets the
+algorithm vary independently from clients that use it.
+
+#### Implementation Details
+
+In this project, the Strategy pattern is implemented for a notification system:
+
+- **Interface**: `NotificationStrategy` - Defines the contract for all notification strategies
+- **Concrete Strategies**:
+    - `EmailNotificationService` - Sends email notifications
+    - `PushNotificationService` - Sends push notifications
+    - `InAppNotificationService` - Sends in-app notifications
+- **Context**: `NotificationContext` - Maintains a reference to a strategy object and delegates the work to it
+- **Client**: `NotificationRouter` - Selects the appropriate strategy based on the notification type
+
+#### Class Diagram
+
+```
+┌───────────────────┐      ┌───────────────────┐
+│ NotificationRouter│─────>│NotificationContext│
+└───────────────────┘      └─────────┬─────────┘
+                                     │
+                                     │ uses
+                                     ▼
+                           ┌─────────────────────┐
+                           │ NotificationStrategy│
+                           └─────────────────────┘
+                                     ▲
+                                     │ implements
+                 ┌───────────────────┼───────────────────┐
+                 │                   │                   │
+    ┌────────────────────┐ ┌─────────────────────┐ ┌────────────────────┐
+    │EmailNotification   │ │PushNotification     │ │InAppNotification   │
+    │Service             │ │Service              │ │Service             │
+    └────────────────────┘ └─────────────────────┘ └────────────────────┘
 ```
 
 ## Getting Started
@@ -161,31 +203,32 @@ In this project, the Builder pattern is implemented for a notification system:
 
 ## Usage Examples
 
-### Strategy Pattern Example
+### Builder Pattern Example
 
 ```java
 // Import necessary classes
 import org.fahim.designpattern.DesignPatternApplication;
-import org.fahim.designpattern.strategy.NotificationRouter;
-import org.fahim.designpattern.strategy.NotificationType;
+import org.fahim.designpattern.builder.NotificationContentService;
+import org.fahim.designpattern.builder.User;
+import org.fahim.designpattern.builder.EmailNotification;
+import org.fahim.designpattern.builder.PushNotification;
 import org.springframework.context.ApplicationContext;
 import org.springframework.boot.SpringApplication;
 
-// Get the router from Spring context
+// Get the notification service from Spring context
 ApplicationContext context = SpringApplication.run(DesignPatternApplication.class, args);
-NotificationRouter router = context.getBean(NotificationRouter.class);
+NotificationContentService service = context.getBean(NotificationContentService.class);
 
-// Send an email notification
-NotificationType sentType = router.sendNotification(NotificationType.EMAIL);
-// Output: Sending email notification
+// Create a user
+User user = new User("John Doe", "john@example.com", "device123");
 
-// Send a push notification
-NotificationType pushType = router.sendNotification(NotificationType.PUSH);
-// Output: Sending push notification
+// Build an email notification
+EmailNotification emailNotification = service.buildEmailNotification(user);
+// Output: EmailNotification[subject=Email Notification Subject, content=Email Notification Content, email=john@example.com]
 
-// Send an in-app notification
-NotificationType inAppType = router.sendNotification(NotificationType.IN_APP);
-// Output: Sending in-app notification
+// Build a push notification
+PushNotification pushNotification = service.buildPushNotification(user);
+// Output: PushNotification[subject=Push Notification Subject, content=Push Notification Content, deviceId=device123]
 ```
 
 ### Decorator Pattern Example
@@ -224,30 +267,57 @@ String allResult = notificationService.sendNotification("user@example.com",
 // Result: "Email , Push , InApp"
 ```
 
-### Builder Pattern Example
+### Factory Pattern Example
 
 ```java
 // Import necessary classes
 import org.fahim.designpattern.DesignPatternApplication;
-import org.fahim.designpattern.builder.NotificationContentService;
-import org.fahim.designpattern.builder.User;
-import org.fahim.designpattern.builder.EmailNotification;
-import org.fahim.designpattern.builder.PushNotification;
+import org.fahim.designpattern.factory.NotificationService;
+import org.fahim.designpattern.factory.NotificationType;
+import org.fahim.designpattern.factory.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.boot.SpringApplication;
 
 // Get the notification service from Spring context
 ApplicationContext context = SpringApplication.run(DesignPatternApplication.class, args);
-NotificationContentService service = context.getBean(NotificationContentService.class);
+NotificationService notificationService = context.getBean("NotificationServiceForFactory", NotificationService.class);
 
 // Create a user
-User user = new User("John Doe", "john@example.com", "device123");
+User user = new User("John Doe", "john@example.com", "1234567890");
 
-// Build an email notification
-EmailNotification emailNotification = service.buildEmailNotification(user);
-// Output: EmailNotification[subject=Email Notification Subject, content=Email Notification Content, email=john@example.com]
+// Send an email notification
+String emailResult = notificationService.sendNotification(user, NotificationType.EMAIL);
+// Output: Sending email notification to john@example.com
 
-// Build a push notification
-PushNotification pushNotification = service.buildPushNotification(user);
-// Output: PushNotification[subject=Push Notification Subject, content=Push Notification Content, deviceId=device123]
+// Send an SMS notification
+String smsResult = notificationService.sendNotification(user, NotificationType.SMS);
+// Output: Sending sms notification to 1234567890
+```
+
+### Strategy Pattern Example
+
+```java
+// Import necessary classes
+
+import org.fahim.designpattern.DesignPatternApplication;
+import org.fahim.designpattern.strategy.NotificationRouter;
+import org.fahim.designpattern.strategy.NotificationType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.boot.SpringApplication;
+
+// Get the router from Spring context
+ApplicationContext context = SpringApplication.run(DesignPatternApplication.class, args);
+NotificationRouter router = context.getBean(NotificationRouter.class);
+
+// Send an email notification
+NotificationType sentType = router.sendNotification(NotificationType.EMAIL);
+// Output: Sending email notification
+
+// Send a push notification
+NotificationType pushType = router.sendNotification(NotificationType.PUSH);
+// Output: Sending push notification
+
+// Send an in-app notification
+NotificationType inAppType = router.sendNotification(NotificationType.IN_APP);
+// Output: Sending in-app notification
 ```
