@@ -28,7 +28,10 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <spotless-maven-plugin.version>2.41.1</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>2.44.4</spotless-maven-plugin.version>
+        <maven-enforcer-plugin.maven-version>3.9.0</maven-enforcer-plugin.maven-version>
+        <maven-enforcer-plugin.java-version>21</maven-enforcer-plugin.java-version>
+        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -72,6 +75,52 @@
                     </java>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven-enforcer-plugin.maven-version}</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>${maven-enforcer-plugin.java-version}</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <configuration>
+                    <ignoredDependencies>
+                        <ignoredDependency>org.springframework:spring-context</ignoredDependency>
+                        <ignoredDependency>org.springframework:spring-core</ignoredDependency>
+                        <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+                        <ignoredDependency>org.springframework.boot:spring-boot-test</ignoredDependency>
+                        <ignoredDependency>org.springframework:spring-beans</ignoredDependency>
+                        <ignoredDependency>org.springframework.boot:spring-boot</ignoredDependency>
+                        <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
+                        <ignoredDependency>org.springframework.boot:spring-boot-autoconfigure</ignoredDependency>
+                        <ignoredDependency>org.springframework.boot:spring-boot-starter</ignoredDependency>
+                        <ignoredDependency>org.springframework.boot:spring-boot-starter-web</ignoredDependency>
+                        <ignoredDependency>org.springframework.boot:spring-boot-starter-test</ignoredDependency>
+                    </ignoredDependencies>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
